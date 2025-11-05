@@ -1,1 +1,0 @@
-# whatsapp-2-frontend
