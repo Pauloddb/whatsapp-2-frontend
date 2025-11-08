@@ -146,7 +146,7 @@ export default function Chat() {
 
     return (
         <section className='bg-gradient w-screen h-screen' onClick={handleMessageOptionsClose}>
-            <header className='shadow-lg shadow-gray-700/70 p-4 bg-gray-700 mb-2.5 fixed top-0 w-full h-1/10 flex items-center justify-between'>
+            <header className='z-20 shadow-lg shadow-gray-700/70 p-4 bg-gray-700 mb-2.5 fixed top-0 w-full h-1/10 flex items-center justify-between'>
                 <h1 className='text-2xl'>Conta: {username}</h1>
                 <h2 className='text-xl'>Online: {onlineUsers}</h2>
             </header>
