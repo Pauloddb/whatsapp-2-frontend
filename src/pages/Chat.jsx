@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
 import MessageOptionsPopup from '../components/MessageOptionsPopup'
 import socket from '../socket'
 
@@ -7,7 +6,9 @@ const serverUrl = import.meta.env.VITE_SERVER_URL
 
 
 export default function Chat() {
-    const { username } = useParams()
+    const [username, setUsername] = useState(null)
+    const [password, setPassword] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
 
     const [message, setMessage] = useState('')
     const [chat, setChat] = useState([])
@@ -25,7 +26,7 @@ export default function Chat() {
 
 
     const scrollToBottom = useCallback(() => {
-        if (messagesContainerRef.current){
+        if (messagesContainerRef.current) {
             messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
         }
     }, [])
@@ -43,17 +44,40 @@ export default function Chat() {
     }
 
 
-    const fetchOnlineUsers = () => {
-        fetch(`${serverUrl}/getOnlineUsers`)
-            .then(res => res.json())
-            .then(data => setOnlineUsers(data.users))
-            .catch(err => console.error('Erro:', err))
-    }
+    
+
 
 
     useEffect(() => {
+        setIsLoading(true)
+
+        const intervalId = setInterval(() => {
+            const storageUsername = localStorage.getItem('username')
+            const storagePassword = localStorage.getItem('password')
+
+            if (storageUsername && storagePassword) {
+                clearInterval(intervalId)
+
+                setUsername(storageUsername)
+                setPassword(storagePassword)
+
+                setIsLoading(false)
+            }
+        }, 500)
+
+        return () => clearInterval(intervalId)
+    }, [])
+
+
+    
+
+
+    useEffect(() => {
+        if (!username || !password || isLoading) return
+
         fetchMessages()
-        fetchOnlineUsers()
+
+        socket.connect()
 
         const messageHandler = (data) => {
             setChat((prev) => [...prev, data])
@@ -75,8 +99,10 @@ export default function Chat() {
             socket.off('message', messageHandler)
             socket.off('updateOnlineUsers', updateOnlineUsersHandler)
             socket.off('deleteMessage', deleteMessageHandler)
+
+            socket.disconnect()
         }
-    }, [])
+    }, [username, password, isLoading])
 
 
     useEffect(() => {
@@ -102,7 +128,7 @@ export default function Chat() {
 
 
 
-    
+
 
 
 
@@ -141,7 +167,16 @@ export default function Chat() {
     }, [handleMessageOptionsClose])
 
 
-    
+
+
+    if (isLoading) {
+        return (
+            <div className='w-screen h-screen flex flex-col justify-center items-center bg-gray-900 text-white'>
+                <div className="w-16 h-16 border-4 border-t-4 border-t-blue-500 border-gray-700 rounded-full animate-spin"></div>
+                <p className='mt-4 text-xl font-medium'>Carregando...</p>
+            </div>
+        )
+    }
 
 
     return (
@@ -156,10 +191,10 @@ export default function Chat() {
             <div ref={messagesContainerRef} className='relative w-full top-1/10 overflow-y-scroll scrollbar-chat h-8/10'>
                 <ul className='flex flex-col gap-4 p-4'>
                     <MessageOptionsPopup
-                    isVisible={messageOptionsPopup.isVisible}
-                    messageId={messageOptionsPopup.messageId}
-                    position={messageOptionsPopup.position}
-                    onDelete={handleDeleteMessage} />
+                        isVisible={messageOptionsPopup.isVisible}
+                        messageId={messageOptionsPopup.messageId}
+                        position={messageOptionsPopup.position}
+                        onDelete={handleDeleteMessage} />
 
                     {chat.map((data) => (
                         <li key={data.id} className={`flex flex-col ${data.author === username ? 'items-end' : 'items-start'}`}>
@@ -176,7 +211,7 @@ export default function Chat() {
             </div>
 
 
-            
+
             <div className='fixed top-9/10 left-1/40 right-1/40 hover:scale-101 transition-all duration-300 shadow-lg shadow-gray-300/20 hover:shadow-gray-300/30 rounded-full w-19/20 h-1/12 bg-gray-800'>
                 <div className='relative border border-gray-400 rounded-full w-full h-full flex justify-center items-center'>
                     <input ref={inputMsgRef} placeholder='Digite sua mensagem...' type="text" onKeyDown={handleKeyDown} onChange={(e) => setMessage(e.target.value)} className='outline-none w-19/20 h-full absolute left-0 px-4' />

@@ -25,8 +25,7 @@ export default function Home() {
             return
         }
         
-
-        const response = await fetch(`${serverUrl}/addUser`, {
+        const response = await fetch(`${serverUrl}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -35,15 +34,18 @@ export default function Home() {
         })
 
         const data = await response.json()
+
         if (data.status === false){
             alert(data.message)
+            navigate('/')
             return
         }
+
 
         localStorage.setItem('username', usernameRef.current.value)
         localStorage.setItem('password', passwordRef.current.value)
         
-        navigate('/login')
+        navigate('/chat')
     }
 
     
@@ -51,14 +53,12 @@ export default function Home() {
     return (
         <section className='w-screen h-screen flex justify-center items-center bg-gradient'>
             <div className='shadow-lg shadow-gray-400/50 flex flex-col items-center gap-4 w-[500px] h-[400px] p-4 bg-gray-900 border border-white rounded-4xl'>
-                <h1 className='text-5xl mt-3 mb-5'>Registro</h1>
+                <h1 className='text-5xl mt-3 mb-5'>Entrar</h1>
 
                 <input ref={usernameRef} className='text-xl w-4/5 h-14 px-4 outline-none border border-white rounded-full' type="text" placeholder='Usuário' />
                 <input ref={passwordRef} className='text-xl w-4/5 h-14 px-4 outline-none border border-white rounded-full' type="password" placeholder='Senha' />
-                <p className='opacity-70 relative bottom-3 right-18 text-lg'>Já tem uma conta? <a href="/login" className='hover:underline'>Entrar</a></p>
 
-                <button className='text-2xl shadow-lg shadow-blue-400/30 hover:shadow-blue-400/50 rounded-full w-4/5 h-14 bg-blue-600 hover:opacity-80 hover:scale-102 transition-all duration-300' onClick={handleEnter}>Registrar-se</button>
-                
+                <button className='relative top-11 text-2xl shadow-lg shadow-blue-400/30 hover:shadow-blue-400/50 rounded-full w-4/5 h-14 bg-blue-600 hover:opacity-80 hover:scale-102 transition-all duration-300' onClick={handleEnter}>Entrar</button>
             </div>
         </section>
     )

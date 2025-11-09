@@ -6,6 +6,7 @@ import './index.css'
 import App from './App.jsx'
 import Home from './pages/Home.jsx'
 import Chat from './pages/Chat.jsx'
+import Login from './pages/Login.jsx'
 
 const router = createBrowserRouter([
   {
@@ -17,7 +18,11 @@ const router = createBrowserRouter([
         element: <Home />
       },
       {
-        path: '/chat/:username',
+        path: '/login',
+        element: <Login />
+      },
+      {
+        path: '/chat',
         element: <Chat />
       }
     ]
