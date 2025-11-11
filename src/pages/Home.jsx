@@ -11,8 +11,11 @@ export default function Home() {
 
     const navigate = useNavigate()
 
-    const usernameRegex = new RegExp(import.meta.env.VITE_USERNAME_REGEX)
-    const passwordRegex = new RegExp(import.meta.env.VITE_PASSWORD_REGEX)
+    const USERNAME_PATTERN = import.meta.env.VITE_USERNAME_REGEX
+    const PASSWORD_PATTERN = import.meta.env.VITE_PASSWORD_REGEX
+
+    const usernameRegex = new RegExp(USERNAME_PATTERN)
+    const passwordRegex = new RegExp(PASSWORD_PATTERN)
 
 
     const handleEnter = async () => {
