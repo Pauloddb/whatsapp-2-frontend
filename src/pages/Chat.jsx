@@ -69,6 +69,19 @@ export default function Chat() {
     }, [])
 
 
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            fetch(`${serverUrl}/ping`)
+                .then(res => res.json())
+                .then(data => console.log(data))
+                .catch(err => console.error('Erro ao pingar:', err))
+        }, 5000 * 60)
+
+        return () => clearInterval(intervalId)
+    }, [])
+
+
     
 
 
