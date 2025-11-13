@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import MessageOptionsPopup from '../components/MessageOptionsPopup'
+import DateHeader from '../components/DateHeader'
 import socket from '../socket'
 
 const serverUrl = import.meta.env.VITE_SERVER_URL
@@ -44,7 +45,7 @@ export default function Chat() {
     }
 
 
-    
+
 
 
 
@@ -82,7 +83,7 @@ export default function Chat() {
     }, [])
 
 
-    
+
 
 
     useEffect(() => {
@@ -182,6 +183,9 @@ export default function Chat() {
 
 
 
+    
+
+
     if (isLoading) {
         return (
             <div className='w-screen h-screen flex flex-col justify-center items-center bg-gray-900 text-white'>
@@ -209,16 +213,22 @@ export default function Chat() {
                         position={messageOptionsPopup.position}
                         onDelete={handleDeleteMessage} />
 
-                    {chat.map((data) => (
-                        <li key={data.id} className={`flex flex-col ${data.author === username ? 'items-end' : 'items-start'}`}>
-                            <p className='opacity-80 text-xs'>{data.author === username ? 'Você' : data.author}</p>
-                            <div onClick={handleMessageOptionsClose} onContextMenu={(e) => { if (data.author === username) handleMessageOptions(e, data.id) }} className={` flex flex-col max-w-[350px] min-w-[150px] min-h-6 p-3 ${data.author === username ? 'bg-green-800' : 'bg-gray-200 text-black'} rounded-xl`}>
-                                <p className='wrap-break-word'>{data.message}</p>
-                                <div className='flex justify-end items-end w-full'>
-                                    <p className='opacity-70 text-xs'>{data.date}</p>
+                    {chat.map((data, index) => (
+                        <div key={data.id} className='flex flex-col items-center w-full gap-8'>
+                            <DateHeader
+                            currentId={data.id}
+                            previousId={index > 0 ? chat[index - 1].id : null} />
+
+                            <li className={`flex flex-col ${data.author === username ? 'items-end' : 'items-start'} w-full`}>
+                                <p className='opacity-80 text-xs'>{data.author === username ? 'Você' : data.author}</p>
+                                <div onClick={handleMessageOptionsClose} onContextMenu={(e) => { if (data.author === username) handleMessageOptions(e, data.id) }} className={` flex flex-col max-w-[350px] min-w-[150px] min-h-6 p-3 ${data.author === username ? 'bg-green-800' : 'bg-gray-200 text-black'} rounded-xl`}>
+                                    <p className='wrap-break-word'>{data.message}</p>
+                                    <div className='flex justify-end items-end w-full'>
+                                        <p className='opacity-70 text-xs'>{data.date}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
+                        </div>
                     ))}
                 </ul>
             </div>
