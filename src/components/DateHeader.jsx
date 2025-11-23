@@ -18,8 +18,9 @@ export default function DateHeader({ currentId, previousId }) {
     if (differenceInDays(currentId, previousId) === 0) return null
 
     return (
-        <div className='flex items-center justify-center h-10 w-16 bg-gray-800 opacity-50 rounded-md'>
+        <div className='flex items-center justify-center h-10 min-w-16 bg-gray-800 opacity-50 rounded-md'>
             <p>{getDayMessage(currentId)}</p>
         </div>
     )
+
 }
